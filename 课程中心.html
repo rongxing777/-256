@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>融兴咨询培训通</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+  
+  <!-- 配置Tailwind自定义主题 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0F4C81', // 主蓝色
+            secondary: '#1A6BB3', // 次要蓝色
+            accent: '#FFB74D', // 强调色
+            neutral: '#F5F7FA', // 中性色
+            'neutral-dark': '#E4E7EB' // 深色中性色
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .card-shadow {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      }
+      .card-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      }
+      .tab-active {
+        border-bottom: 3px solid theme('colors.primary');
+        color: theme('colors.primary');
+        font-weight: 600;
+      }
+      .scan-overlay {
+        backdrop-filter: blur(5px);
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 font-sans text-gray-800 min-h-screen flex flex-col">
+  <!-- 顶部导航栏 -->
+  <header class="bg-primary text-white shadow-md sticky top-0 z-50 transition-all duration-300">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <i class="fa fa-graduation-cap text-2xl"></i>
+        <h1 class="text-xl md:text-2xl font-bold">融兴咨询培训通</h1>
+      </div>
+      
+      <div class="flex items-center space-x-4">
+        <!-- 管理员入口（密码登录） -->
+        <button id="admin-login" class="bg-white text-primary px-3 py-1 rounded text-sm hover:bg-gray-100 transition-colors">
+          <i class="fa fa-lock mr-1"></i>管理员入口
+        </button>
+        <div class="relative">
+          <button class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center hover:bg-opacity-80 transition-colors">
+            <i class="fa fa-user"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 页面容器 -->
+  <div id="page-container">
+    <!-- 主内容区（课程中心） -->
+    <main id="course-page" class="flex-grow container mx-auto px-4 py-6">
+      <!-- 页面标题（已改为"课程中心"） -->
+      <div class="mb-8 text-center">
+        <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-gray-800 mb-2">课程中心</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">融兴·坚持长期主义，为银行人提供专业的课程培训服务，助力职业发展与技能提升</p>
+      </div>
+      
+      <!-- 课程分类标签页 -->
+      <div class="mb-8 border-b border-gray-200">
+        <div class="flex overflow-x-auto md:overflow-visible space-x-8">
+          <button id="public-tab" class="tab-active py-4 px-1 text-lg whitespace-nowrap focus:outline-none">
+            公开课程
+          </button>
+          <button id="internal-tab" class="py-4 px-1 text-lg text-gray-600 whitespace-nowrap focus:outline-none">
+            内训课程
+          </button>
+        </div>
+      </div>
+      
+      <!-- 课程列表区域 -->
+      <div id="course-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- 课程卡片将通过JavaScript动态生成 -->
+      </div>
+      
+      <!-- 加载更多提示 -->
+      <div id="loading" class="py-10 text-center hidden">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <p class="mt-2 text-gray-600">加载更多课程...</p>
+      </div>
+      
+      <!-- 没有更多课程提示 -->
+      <div id="no-more" class="py-10 text-center hidden">
+        <p class="text-gray-500">没有更多课程了</p>
+      </div>
+    </main>
+
+    <!-- 公司简介页面 -->
+    <main id="company-page" class="flex-grow container mx-auto px-4 py-6 hidden">
+      <div class="mb-8">
+        <button id="back-to-courses" class="inline-flex items-center text-primary hover:text-secondary transition-colors mb-6">
+          <i class="fa fa-arrow-left mr-2"></i> 返回课程中心
+        </button>
+        <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-gray-800 mb-4">公司简介</h2>
+        
+        <div id="company-content" class="bg-white rounded-lg p-6 card-shadow">
+          <!-- 公司简介内容将通过JavaScript加载 -->
+        </div>
+        
+        <!-- 管理员编辑按钮（仅管理员可见） -->
+        <div class="mt-6 text-right">
+          <button id="edit-company" class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-md transition-colors hidden">
+            <i class="fa fa-edit mr-1"></i> 编辑简介
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 课程详情模态框 -->
+  <div id="course-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto m-4 transform transition-all">
+      <div class="relative">
+        <!-- 课程封面图 -->
+        <div id="modal-cover-container" class="h-64 md:h-80 bg-gray-200">
+          <img id="modal-cover" src="" alt="课程封面" class="w-full h-full object-cover">
+        </div>
+        
+        <!-- 关闭按钮 -->
+        <button id="close-modal" class="absolute top-4 right-4 bg-black bg-opacity-50 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-opacity-70 transition-colors">
+          <i class="fa fa-times"></i>
+        </button>
+        
+        <!-- 管理员操作按钮（仅管理员可见） -->
+        <div id="modal-admin-actions" class="absolute top-4 left-4 flex space-x-2 hidden">
+          <button id="edit-course" class="bg-white text-primary px-3 py-1 rounded text-sm hover:bg-gray-100 transition-colors">
+            <i class="fa fa-edit mr-1"></i>编辑
+          </button>
+          <button id="delete-course" class="bg-white text-red-500 px-3 py-1 rounded text-sm hover:bg-gray-100 transition-colors">
+            <i class="fa fa-trash mr-1"></i>删除
+          </button>
+        </div>
+      </div>
+      
+      <div class="p-6">
+        <h3 id="modal-title" class="text-2xl font-bold mb-4"></h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-sm">
+          <div class="flex items-center text-gray-600">
+            <i class="fa fa-user-circle text-primary mr-2"></i>
+            <span id="modal-teacher"></span>
+          </div>
+          <div class="flex items-center text-gray-600">
+            <i class="fa fa-calendar text-primary mr-2"></i>
+            <span id="modal-time"></span>
+          </div>
+          <div class="flex items-center text-gray-600">
+            <i class="fa fa-map-marker text-primary mr-2"></i>
+            <span id="modal-location"></span>
+          </div>
+        </div>
+        
+        <div class="mb-6">
+          <h4 class="text-lg font-semibold mb-2 text-gray-800">课程简介</h4>
+          <p id="modal-description" class="text-gray-600 leading-relaxed"></p>
+        </div>
+        
+        <div>
+          <h4 class="text-lg font-semibold mb-2 text-gray-800">课程大纲</h4>
+          <div id="modal-outline" class="text-gray-600 leading-relaxed space-y-2"></div>
+        </div>
+        
+        <!-- 报名按钮 -->
+        <div class="mt-8 flex justify-end">
+          <button class="bg-primary hover:bg-secondary text-white px-6 py-2 rounded-md transition-colors">
+            我要报名
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 管理员后台 -->
+  <div id="admin-panel" class="fixed inset-0 bg-white z-50 transform translate-x-full transition-transform duration-300 overflow-y-auto hidden">
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-8">
+        <div class="flex items-center space-x-2">
+          <i class="fa fa-cog text-primary text-2xl"></i>
+          <h2 class="text-2xl font-bold">课程管理后台</h2>
+        </div>
+        <button id="close-admin" class="text-gray-500 hover:text-gray-700">
+          <i class="fa fa-times text-xl"></i>
+        </button>
+      </div>
+      
+      <!-- 新增课程按钮（仅管理员可见） -->
+      <button id="add-course-btn" class="bg-primary hover:bg-secondary text-white px-6 py-2 rounded-md transition-colors mb-8 flex items-center">
+        <i class="fa fa-plus mr-2"></i>新增课程
+      </button>
+      
+      <div class="bg-neutral rounded-lg p-4 mb-6">
+        <h3 class="font-semibold mb-4">课程管理</h3>
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white">
+            <thead>
+              <tr class="bg-gray-100">
+                <th class="py-3 px-4 text-left text-sm font-semibold">封面</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold">标题</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold">类型</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold">主讲人</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold">时间</th>
+                <th class="py-3 px-4 text-left text-sm font-semibold">操作</th>
+              </tr>
+            </thead>
+            <tbody id="admin-course-list">
+              <!-- 管理员课程列表将通过JavaScript动态生成 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 管理员密码登录模态框 -->
+  <div id="admin-login-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center hidden scan-overlay">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6 m-4">
+      <div class="mb-4 text-center">
+        <i class="fa fa-lock text-primary text-4xl"></i>
+        <h3 class="text-xl font-bold mt-2">管理员登录</h3>
+      </div>
+      <p class="text-gray-600 mb-6">请输入管理员密码进行登录</p>
+      
+      <form id="admin-login-form" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1" for="admin-password">
+            管理员密码
+          </label>
+          <input type="password" id="admin-password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" placeholder="请输入密码" required>
+        </div>
+        
+        <div id="login-error" class="text-red-500 text-sm hidden">
+          <i class="fa fa-exclamation-circle"></i> 密码错误，请重新输入
+        </div>
+        
+        <div class="flex justify-end space-x-4">
+          <button type="button" id="cancel-login" class="px-6 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+            取消
+          </button>
+          <button type="submit" class="px-6 py-2 bg-primary text-white rounded-md hover:bg-secondary transition-colors">
+            登录
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 新增/编辑课程表单（仅管理员可操作） -->
+  <div id="course-form-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto m-4">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-6">
+          <h3 id="form-title" class="text-xl font-bold">新增课程</h3>
+          <button id="close-form" class="text-gray-500 hover:text-gray-700">
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
+        
+        <form id="course-form" class="space-y-6">
+          <input type="hidden" id="course-id">
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1" for="course-type">
+                所属板块 <span class="text-red-500">*</span>
+              </label>
+              <select id="course-type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                <option value="public">公开课程</option>
+                <option value="internal">内训课程</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1" for="course-title">
+                课程标题 <span class="text-red-500">*</span>
+              </label>
+              <input type="text" id="course-title" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" required>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1" for="course-teacher">
+                主讲人 <span class="text-red-500">*</span>
+              </label>
+              <input type="text" id="course-teacher" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" required>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1" for="course-time">
+                课程时间 <span class="text-red-500">*</span>
+              </label>
+              <input type="datetime-local" id="course-time" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" required>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1" for="course-location">
+                课程地点 <span class="text-red-500">*</span>
+              </label>
+              <input type="text" id="course-location" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" required>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1" for="course-cover">
+                课程封面图
+              </label>
+              <input type="file" id="course-cover" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-primary file:text-white hover:file:bg-secondary">
+              <div id="cover-preview-container" class="mt-2 hidden">
+                <img id="cover-preview" src="" alt="封面预览" class="h-32 object-cover rounded">
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="course-description">
+              课程简介 <span class="text-red-500">*</span>
+            </label>
+            <textarea id="course-description" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" required></textarea>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="course-outline">
+              课程大纲 <span class="text-red-500">*</span>
+            </label>
+            <div class="border border-gray-300 rounded-md overflow-hidden">
+              <!-- 简易富文本编辑器工具栏 -->
+              <div class="bg-gray-50 p-2 border-b border-gray-300 flex space-x-2">
+                <button type="button" class="text-gray-600 hover:text-primary" data-command="bold">
+                  <i class="fa fa-bold"></i>
+                </button>
+                <button type="button" class="text-gray-600 hover:text-primary" data-command="italic">
+                  <i class="fa fa-italic"></i>
+                </button>
+                <button type="button" class="text-gray-600 hover:text-primary" data-command="underline">
+                  <i class="fa fa-underline"></i>
+                </button>
+                <button type="button" class="text-gray-600 hover:text-primary" data-command="insertUnorderedList">
+                  <i class="fa fa-list-ul"></i>
+                </button>
+                <button type="button" class="text-gray-600 hover:text-primary" data-command="insertOrderedList">
+                  <i class="fa fa-list-ol"></i>
+                </button>
+              </div>
+              <div id="course-outline" contenteditable="true" class="w-full px-3 py-2 min-h-[150px] focus:outline-none" required></div>
+            </div>
+          </div>
+          
+          <div class="flex justify-end space-x-4 pt-4 border-t border-gray-200">
+            <button type="button" id="cancel-form" class="px-6 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+              取消
+            </button>
+            <button type="submit" class="px-6 py-2 bg-primary text-white rounded-md hover:bg-secondary transition-colors">
+              保存课程
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 公司简介编辑表单（仅管理员可操作） -->
+  <div id="company-form-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto m-4">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-xl font-bold">编辑公司简介</h3>
+          <button id="close-company-form" class="text-gray-500 hover:text-gray-700">
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
+        
+        <form id="company-form" class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              公司简介内容 <span class="text-red-500">*</span>
+            </label>
+            <div class="border border-gray-300 rounded-md overflow-hidden">
+              <!-- 简易富文本编辑器工具栏 -->
+              <div class="bg-gray-50 p-2 border-b border-gray-300 flex space-x-2">
+                <button type="button" class="text-gray-600 hover:text-primary" data-command="bold">
+                  <i class="fa fa-bold"></i>
+                </button>
+                <button type="button" class="text-gray-600 hover:text-primary" data-command="italic">
+                  <i class="fa fa-italic"></i>
+                </button>
+                <button type="button" class="text-gray-600 hover:text-primary" data-command="underline">
+                  <i class="fa fa-underline"></i>
+                </button>
+                <button type="button" class="text-gray-600 hover:text-primary" data-command="insertUnorderedList">
+                  <i class="fa fa-list-ul"></i>
+                </button>
+                <button type="button" class="text-gray-600 hover:text-primary" data-command="insertOrderedList">
+                  <i class="fa fa-list-ol"></i>
+                </button>
+              </div>
+              <div id="company-content-editor" contenteditable="true" class="w-full px-3 py-2 min-h-[300px] focus:outline-none" required></div>
+            </div>
+          </div>
+          
+          <div class="flex justify-end space-x-4 pt-4 border-t border-gray-200">
+            <button type="button" id="cancel-company-form" class="px-6 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+              取消
+            </button>
+            <button type="submit" class="px-6 py-2 bg-primary text-white rounded-md hover:bg-secondary transition-colors">
+              保存简介
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 删除确认模态框 -->
+  <div id="delete-confirm" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6 m-4">
+      <h3 class="text-xl font-bold text-gray-800 mb-4">确认删除</h3>
+      <p class="text-gray-600 mb-6">您确定要删除这门课程吗？此操作无法撤销。</p>
+      <div class="flex justify-end space-x-4">
+        <button id="cancel-delete" class="px-6 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+          取消
+        </button>
+        <button id="confirm-delete" class="px-6 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors">
+          确认删除
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页脚 -->
+  <footer class="bg-primary text-white py-6 mt-12">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-4 md:mb-0">
+          <p class="text-sm">© 2026 融兴咨询培训通</p>
+        </div>
+        <div class="flex space-x-6">
+          <a href="#" class="text-white hover:text-gray-200 transition-colors">
+            <i class="fa fa-question-circle"></i> 帮助中心
+          </a>
+          <a href="#" id="contact-link" class="text-white hover:text-gray-200 transition-colors">
+            <i class="fa fa-envelope"></i> 联系我们
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // 全局状态管理
+    const state = {
+      isAdmin: false,
+      currentTab: 'public',
+      courses: [],
+      companyInfo: {
+        content: '<p>融兴咨询培训通是一家专注于为银行人提供专业培训服务的机构，致力于提升金融行业从业人员的专业素养和业务能力。</p><p>自成立以来，我们已为众多银行机构提供了高质量的培训课程，涵盖银行业务知识、风险管理、客户服务、金融科技等多个领域。</p><p>我们拥有一支经验丰富的讲师团队，结合理论与实践，为学员提供实用、高效的培训内容，助力银行人职业发展与技能提升。</p>'
+      },
+      currentCourseId: null,
+      page: 1,
+      limit: 6,
+      hasMore: true
+    };
+
+    // 初始化示例课程数据
+    function initCourses() {
+      state.courses = [
+        {
+          id: 1,
+          type: 'public',
+          title: '银行业务基础知识培训',
+          teacher: '张明',
+          time: '2026-10-15T09:00',
+          location: '总行1号会议室',
+          cover: 'https://picsum.photos/id/20/600/400',
+          description: '本课程将全面介绍银行各项业务的基础知识，包括储蓄、贷款、结算等核心业务流程和操作规范，帮助新员工快速熟悉银行业务体系。',
+          outline: '<p><strong>一、银行业务概述</strong></p><ul><li>1.1 银行的基本职能</li><li>1.2 银行业务分类</li></ul><p><strong>二、核心业务介绍</strong></p><ul><li>2.1 储蓄业务</li><li>2.2 贷款业务</li><li>2.3 结算业务</li></ul>'
+        },
+        {
+          id: 2,
+          type: 'public',
+          title: '客户服务技巧提升',
+          teacher: '李华',
+          time: '2026-10-20T14:30',
+          location: '总行2号会议室',
+          cover: 'https://picsum.photos/id/26/600/400',
+          description: '提升员工的客户服务意识和沟通技巧，学习如何有效处理客户投诉，提高客户满意度和忠诚度，树立良好的银行服务形象。',
+          outline: '<p><strong>一、客户服务理念</strong></p><ul><li>1.1 以客户为中心的服务理念</li><li>1.2 优质服务的标准</li></ul><p><strong>二、沟通技巧</strong></p><ul><li>2.1 有效倾听的技巧</li><li>2.2 提问的艺术</li><li>2.3 非语言沟通</li></ul>'
+        },
+        {
+          id: 3,
+          type: 'internal',
+          title: '风险管理与内部控制',
+          teacher: '王强',
+          time: '2026-10-25T10:00',
+          location: '总行3号会议室',
+          cover: 'https://picsum.photos/id/48/600/400',
+          description: '本内训课程针对银行风险管理体系进行深入讲解，包括信用风险、市场风险和操作风险的识别、评估与控制措施，强化员工风险意识。',
+          outline: '<p><strong>一、银行风险概述</strong></p><ul><li>1.1 风险的种类与特征</li><li>1.2 风险管理的重要性</li></ul><p><strong>二、风险控制措施</strong></p><ul><li>2.1 信用风险管理</li><li>2.2 操作风险防控</li></ul>'
+        },
+        {
+          id: 4,
+          type: 'public',
+          title: '金融科技发展趋势',
+          teacher: '赵伟',
+          time: '2026-11-05T15:00',
+          location: '总行多功能厅',
+          cover: 'https://picsum.photos/id/60/600/400',
+          description: '探讨金融科技的最新发展趋势及其对银行业的影响，介绍人工智能、大数据、区块链等技术在金融领域的应用案例和前景展望。',
+          outline: '<p><strong>一、金融科技发展现状</strong></p><ul><li>1.1 全球金融科技发展概况</li><li>1.2 我国金融科技发展特点</li></ul><p><strong>二、新兴技术应用</strong></p><ul><li>2.1 人工智能在风控中的应用</li><li>2.2 区块链与数字货币</li></ul>'
+        },
+        {
+          id: 5,
+          type: 'internal',
+          title: '中层管理人员领导力提升',
+          teacher: '陈静',
+          time: '2026-11-10T09:30',
+          location: '培训中心A栋',
+          cover: 'https://picsum.photos/id/100/600/400',
+          description: '专为中层管理人员设计的内训课程，聚焦团队管理、决策能力、沟通协调等核心领导技能，提升管理效能和团队凝聚力。',
+          outline: '<p><strong>一、领导力基础</strong></p><ul><li>1.1 领导力的内涵与要素</li><li>1.2 不同情境下的领导风格</li></ul><p><strong>二、团队管理技能</strong></p><ul><li>2.1 团队建设与激励</li><li>2.2 冲突管理与解决</li></ul>'
+        },
+        {
+          id: 6,
+          type: 'public',
+          title: '反洗钱法规与实务操作',
+          teacher: '刘强',
+          time: '2026-11-15T14:00',
+          location: '总行1号会议室',
+          cover: 'https://picsum.photos/id/180/600/400',
+          description: '解读最新反洗钱法律法规，分析典型案例，教授实务操作中的识别、报告和防控技巧，帮助员工履行反洗钱义务，防范合规风险。',
+          outline: '<p><strong>一、反洗钱法规体系</strong></p><ul><li>1.1 最新法规解读</li><li>1.2 监管要求与责任</li></ul><p><strong>二、实务操作要点</strong></p><ul><li>2.1 客户身份识别</li><li>2.2 可疑交易分析与报告</li></ul>'
+        }
+      ];
+    }
+
+    // 渲染公司简介
+    function renderCompanyInfo() {
+      document.getElementById('company-content').innerHTML = state.companyInfo.content;
+      document.getElementById('company-content-editor').innerHTML = state.companyInfo.content;
+      // 根据管理员状态显示编辑按钮
+      document.getElementById('edit-company').classList.toggle('hidden', !state.isAdmin);
+    }
+
+    // 格式化日期时间
+    function formatDateTime(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    // 渲染课程列表
+    function renderCourses() {
+      const courseContainer = document.getElementById('course-container');
+      const filteredCourses = state.courses.filter(course => course.type === state.currentTab);
+      const coursesToShow = filteredCourses.slice(0, state.page * state.limit);
+      
+      // 清空容器（仅在第一页时）
+      if (state.page === 1) {
+        courseContainer.innerHTML = '';
+      }
+      
+      // 添加课程卡片
+      coursesToShow.forEach(course => {
+        // 避免重复添加
+        if (document.getElementById(`course-${course.id}`)) return;
+        
+        const courseCard = document.createElement('div');
+        courseCard.id = `course-${course.id}`;
+        courseCard.className = 'bg-white rounded-lg overflow-hidden card-shadow card-hover';
+        courseCard.innerHTML = `
+          <div class="h-48 bg-gray-200 relative">
+            <img src="${course.cover}" alt="${course.title}" class="w-full h-full object-cover">
+            ${course.type === 'internal' ? '<span class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded">内训</span>' : ''}
+          </div>
+          <div class="p-5">
+            <h3 class="text-lg font-semibold mb-2 line-clamp-2">${course.title}</h3>
+            <div class="flex items-center text-sm text-gray-600 mb-2">
+              <i class="fa fa-user-circle mr-1"></i>
+              <span>${course.teacher}</span>
+            </div>
+            <div class="flex items-center text-sm text-gray-600 mb-3">
+              <i class="fa fa-calendar mr-1"></i>
+              <span>${formatDateTime(course.time)}</span>
+            </div>
+            <button class="view-course w-full bg-primary hover:bg-secondary text-white py-2 rounded transition-colors" data-id="${course.id}">
+              查看详情
+            </button>
+          </div>
+        `;
+        courseContainer.appendChild(courseCard);
+        
+        // 添加查看详情事件
+        courseCard.querySelector('.view-course').addEventListener('click', () => {
+          showCourseDetail(course.id);
+        });
+      });
+      
+      // 检查是否还有更多课程
+      state.hasMore = coursesToShow.length < filteredCourses.length;
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('no-more').classList.toggle('hidden', state.hasMore);
+    }
+
+    // 渲染管理员课程列表
+    function renderAdminCourses() {
+      const adminCourseList = document.getElementById('admin-course-list');
+      adminCourseList.innerHTML = '';
+      
+      state.courses.forEach(course => {
+        const row = document.createElement('tr');
+        row.className = 'border-b border-gray-200 hover:bg-gray-50';
+        row.innerHTML = `
+          <td class="py-3 px-4">
+            <img src="${course.cover}" alt="${course.title}" class="h-12 w-16 object-cover rounded">
+          </td>
+          <td class="py-3 px-4">${course.title}</td>
+          <td class="py-3 px-4">${course.type === 'public' ? '公开课程' : '内训课程'}</td>
+          <td class="py-3 px-4">${course.teacher}</td>
+          <td class="py-3 px-4">${formatDateTime(course.time)}</td>
+          <td class="py-3 px-4">
+            <div class="flex space-x-2">
+              <button class="edit-admin-course text-primary hover:text-secondary" data-id="${course.id}">
+                <i class="fa fa-edit"></i>
+              </button>
+              <button class="delete-admin-course text-red-500 hover:text-red-600" data-id="${course.id}">
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        adminCourseList.appendChild(row);
+        
+        // 添加编辑和删除事件
+        row.querySelector('.edit-admin-course').addEventListener('click', () => {
+          editCourse(course.id);
+        });
+        row.querySelector('.delete-admin-course').addEventListener('click', () => {
+          confirmDelete(course.id);
+        });
+      });
+    }
+
+    // 显示课程详情
+    function showCourseDetail(courseId) {
+      const course = state.courses.find(c => c.id === courseId);
+      if (!course) return;
+      
+      state.currentCourseId = courseId;
+      
+      document.getElementById('modal-title').textContent = course.title;
+      document.getElementById('modal-teacher').textContent = course.teacher;
+      document.getElementById('modal-time').textContent = formatDateTime(course.time);
+      document.getElementById('modal-location').textContent = course.location;
+      document.getElementById('modal-cover').src = course.cover;
+      document.getElementById('modal-description').textContent = course.description;
+      document.getElementById('modal-outline').innerHTML = course.outline;
+      
+      // 根据角色显示或隐藏管理员操作按钮
+      document.getElementById('modal-admin-actions').classList.toggle('hidden', !state.isAdmin);
+      
+      // 显示模态框
+      document.getElementById('course-modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // 切换到公司简介页面
+    function showCompanyPage() {
+      document.getElementById('course-page').classList.add('hidden');
+      document.getElementById('company-page').classList.remove('hidden');
+      // 根据角色显示编辑按钮
+      document.getElementById('edit-company').classList.toggle('hidden', !state.isAdmin);
+    }
+
+    // 切换回课程页面
+    function showCoursePage() {
+      document.getElementById('company-page').classList.add('hidden');
+      document.getElementById('course-page').classList.remove('hidden');
+    }
+
+    // 打开公司简介编辑表单
+    function openCompanyEditForm() {
+      // 只有管理员可以打开编辑表单
+      if (!state.isAdmin) return;
+      
+      document.getElementById('company-content-editor').innerHTML = state.companyInfo.content;
+      document.getElementById('company-form-modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // 保存公司简介
+    function saveCompanyInfo(e) {
+      e.preventDefault();
+      // 只有管理员可以保存
+      if (!state.isAdmin) return;
+      
+      state.companyInfo.content = document.getElementById('company-content-editor').innerHTML;
+      renderCompanyInfo();
+      document.getElementById('company-form-modal').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    // 打开新增课程表单
+    function openAddCourseForm() {
+      // 只有管理员可以打开新增表单
+      if (!state.isAdmin) return;
+      
+      document.getElementById('form-title').textContent = '新增课程';
+      document.getElementById('course-form').reset();
+      document.getElementById('course-id').value = '';
+      document.getElementById('cover-preview-container').classList.add('hidden');
+      document.getElementById('course-outline').innerHTML = '';
+      
+      document.getElementById('course-form-modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // 编辑课程
+    function editCourse(courseId) {
+      // 只有管理员可以编辑
+      if (!state.isAdmin) return;
+      
+      const course = state.courses.find(c => c.id === courseId);
+      if (!course) return;
+      
+      document.getElementById('form-title').textContent = '编辑课程';
+      document.getElementById('course-id').value = course.id;
+      document.getElementById('course-type').value = course.type;
+      document.getElementById('course-title').value = course.title;
+      document.getElementById('course-teacher').value = course.teacher;
+      document.getElementById('course-time').value = course.time;
+      document.getElementById('course-location').value = course.location;
+      document.getElementById('course-description').value = course.description;
+      document.getElementById('course-outline').innerHTML = course.outline;
+      
+      // 显示封面预览
+      const coverPreview = document.getElementById('cover-preview');
+      const coverContainer = document.getElementById('cover-preview-container');
+      coverPreview.src = course.cover;
+      coverContainer.classList.remove('hidden');
+      
+      document.getElementById('course-form-modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // 保存课程
+    function saveCourse(e) {
+      e.preventDefault();
+      // 只有管理员可以保存课程
+      if (!state.isAdmin) return;
+      
+      const courseId = document.getElementById('course-id').value;
+      const isEdit = !!courseId;
+      
+      // 生成新ID（如果是新增）
+      const newId = isEdit ? parseInt(courseId) : Math.max(...state.courses.map(c => c.id), 0) + 1;
+      
+      // 获取表单数据
+      const courseData = {
+        id: newId,
+        type: document.getElementById('course-type').value,
+        title: document.getElementById('course-title').value,
+        teacher: document.getElementById('course-teacher').value,
+        time: document.getElementById('course-time').value,
+        location: document.getElementById('course-location').value,
+        description: document.getElementById('course-description').value,
+        outline: document.getElementById('course-outline').innerHTML,
+        // 实际应用中应该处理图片上传，这里简化处理
+        cover: document.getElementById('cover-preview').src || 'https://picsum.photos/id/20/600/400'
+      };
+      
+      // 处理封面图（实际应用中应该上传到服务器）
+      const coverInput = document.getElementById('course-cover');
+      if (coverInput.files && coverInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          courseData.cover = e.target.result;
+          finishSave(courseData, isEdit);
+        };
+        reader.readAsDataURL(coverInput.files[0]);
+      } else {
+        finishSave(courseData, isEdit);
+      }
+    }
+
+    // 完成保存操作
+    function finishSave(courseData, isEdit) {
+      if (isEdit) {
+        // 更新现有课程
+        const index = state.courses.findIndex(c => c.id === courseData.id);
+        if (index !== -1) {
+          state.courses[index] = courseData;
+        }
+      } else {
+        // 添加新课程
+        state.courses.unshift(courseData);
+      }
+      
+      // 关闭表单
+      document.getElementById('course-form-modal').classList.add('hidden');
+      document.body.style.overflow = '';
+      
+      // 重新渲染课程列表
+      renderCourses();
+      renderAdminCourses();
+    }
+
+    // 确认删除课程
+    function confirmDelete(courseId) {
+      // 只有管理员可以删除
+      if (!state.isAdmin) return;
+      
+      state.currentCourseId = courseId;
+      document.getElementById('delete-confirm').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // 执行删除课程
+    function deleteCourse() {
+      // 只有管理员可以删除
+      if (!state.isAdmin || !state.currentCourseId) return;
+      
+      state.courses = state.courses.filter(c => c.id !== state.currentCourseId);
+      
+      // 关闭确认框和可能打开的详情框
+      document.getElementById('delete-confirm').classList.add('hidden');
+      document.getElementById('course-modal').classList.add('hidden');
+      document.body.style.overflow = '';
+      
+      // 重新渲染课程列表
+      renderCourses();
+      renderAdminCourses();
+    }
+
+    // 管理员密码登录验证（密码：83289848）
+    function adminLogin(e) {
+      e.preventDefault();
+      const password = document.getElementById('admin-password').value;
+      const errorElement = document.getElementById('login-error');
+      
+      // 验证密码
+      if (password === '83289848') {
+        state.isAdmin = true;
+        document.getElementById('admin-login-modal').classList.add('hidden');
+        document.body.style.overflow = '';
+        
+        // 显示管理员面板
+        document.getElementById('admin-panel').classList.remove('translate-x-full', 'hidden');
+        
+        // 更新相关UI
+        renderCompanyInfo();
+        renderCourses();
+        errorElement.classList.add('hidden');
+      } else {
+        // 密码错误
+        errorElement.classList.remove('hidden');
+      }
+    }
+
+    // 切换标签页
+    function switchTab(tab) {
+      state.currentTab = tab;
+      state.page = 1;
+      
+      // 更新标签样式
+      document.getElementById('public-tab').classList.toggle('tab-active', tab === 'public');
+      document.getElementById('internal-tab').classList.toggle('tab-active', tab === 'internal');
+      document.getElementById('public-tab').classList.toggle('text-gray-600', tab !== 'public');
+      document.getElementById('internal-tab').classList.toggle('text-gray-600', tab !== 'internal');
+      
+      // 重新渲染课程列表
+      renderCourses();
+    }
+
+    // 加载更多课程
+    function loadMoreCourses() {
+      if (state.hasMore && !document.getElementById('loading').classList.contains('hidden')) {
+        state.page++;
+        renderCourses();
+      }
+    }
+
+    // 监听滚动事件，实现无限滚动
+    function handleScroll() {
+      // 只有在课程页面时才触发滚动加载
+      if (document.getElementById('course-page').classList.contains('hidden')) return;
+      
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = document.documentElement.clientHeight;
+      
+      // 滚动到页面底部附近时加载更多
+      if (scrollTop + clientHeight >= scrollHeight - 300 && state.hasMore) {
+        document.getElementById('loading').classList.remove('hidden');
+        // 模拟网络延迟
+        setTimeout(loadMoreCourses, 1000);
+      }
+    }
+
+    // 初始化事件监听
+    function initEventListeners() {
+      // 标签页切换
+      document.getElementById('public-tab').addEventListener('click', () => switchTab('public'));
+      document.getElementById('internal-tab').addEventListener('click', () => switchTab('internal'));
+      
+      // 管理员登录 - 打开密码登录模态框
+      document.getElementById('admin-login').addEventListener('click', () => {
+        document.getElementById('admin-login-modal').classList.remove('hidden');
+        document.getElementById('admin-password').value = '';
+        document.getElementById('login-error').classList.add('hidden');
+        document.body.style.overflow = 'hidden';
+      });
+      
+      // 提交管理员登录表单
+      document.getElementById('admin-login-form').addEventListener('submit', adminLogin);
+      
+      // 取消管理员登录
+      document.getElementById('cancel-login').addEventListener('click', () => {
+        document.getElementById('admin-login-modal').classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+      
+      // 关闭管理员面板
+      document.getElementById('close-admin').addEventListener('click', () => {
+        document.getElementById('admin-panel').classList.add('translate-x-full');
+      });
+      
+      // 新增课程
+      document.getElementById('add-course-btn').addEventListener('click', openAddCourseForm);
+      
+      // 关闭课程详情
+      document.getElementById('close-modal').addEventListener('click', () => {
+        document.getElementById('course-modal').classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+      
+      // 编辑课程（从详情页）
+      document.getElementById('edit-course').addEventListener('click', () => {
+        document.getElementById('course-modal').classList.add('hidden');
+        editCourse(state.currentCourseId);
+      });
+      
+      // 删除课程（从详情页）
+      document.getElementById('delete-course').addEventListener('click', () => {
+        document.getElementById('course-modal').classList.add('hidden');
+        confirmDelete(state.currentCourseId);
+      });
+      
+      // 关闭课程表单
+      document.getElementById('close-form').addEventListener('click', () => {
+        document.getElementById('course-form-modal').classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+      
+      document.getElementById('cancel-form').addEventListener('click', () => {
+        document.getElementById('course-form-modal').classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+      
+      // 提交课程表单
+      document.getElementById('course-form').addEventListener('submit', saveCourse);
+      
+      // 取消删除
+      document.getElementById('cancel-delete').addEventListener('click', () => {
+        document.getElementById('delete-confirm').classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+      
+      // 确认删除
+      document.getElementById('confirm-delete').addEventListener('click', deleteCourse);
+      
+      // 封面预览
+      document.getElementById('course-cover').addEventListener('change', function(e) {
+        if (this.files && this.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            document.getElementById('cover-preview').src = e.target.result;
+            document.getElementById('cover-preview-container').classList.remove('hidden');
+          };
+          reader.readAsDataURL(this.files[0]);
+        }
+      });
+      
+      // 富文本编辑器工具栏
+      document.querySelectorAll('[data-command]').forEach(button => {
+        button.addEventListener('click', function() {
+          const command = this.getAttribute('data-command');
+          document.execCommand(command, false, null);
+          // 判断是哪个编辑器的按钮
+          if (document.getElementById('course-form-modal').classList.contains('hidden')) {
+            document.getElementById('company-content-editor').focus();
+          } else {
+            document.getElementById('course-outline').focus();
+          }
+        });
+      });
+      
+      // 滚动加载更多
+      window.addEventListener('scroll', handleScroll);
+      
+      // 页面切换 - 联系我们
+      document.getElementById('contact-link').addEventListener('click', (e) => {
+        e.preventDefault();
+        showCompanyPage();
+      });
+      
+      // 返回课程中心
+      document.getElementById('back-to-courses').addEventListener('click', showCoursePage);
+      
+      // 公司简介编辑
+      document.getElementById('edit-company').addEventListener('click', openCompanyEditForm);
+      
+      // 关闭公司简介编辑表单
+      document.getElementById('close-company-form').addEventListener('click', () => {
+        document.getElementById('company-form-modal').classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+      
+      document.getElementById('cancel-company-form').addEventListener('click', () => {
+        document.getElementById('company-form-modal').classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+      
+      // 提交公司简介表单
+      document.getElementById('company-form').addEventListener('submit', saveCompanyInfo);
+    }
+
+    // 初始化应用
+    function initApp() {
+      initCourses();
+      initEventListeners();
+      renderCourses();
+      renderAdminCourses();
+      renderCompanyInfo();
+    }
+
+    // 启动应用
+    document.addEventListener('DOMContentLoaded', initApp);
+  </script>
+</body>
+</html>
